@@ -1,7 +1,7 @@
 # Use Bash shell expansion
 SHELL=/bin/bash
 #The program that you use for viewing pdf files
-PDFVIEWER = evince
+PDFVIEWER = ~/Library/Application\ Support/Sublime\ Text\ 3/Packages/LaTeXTools/skim/displayfile -r
 # Change name of this if you change the name of demo_student_thesis.tex, should be name of the main tex file
 TEXMAINFILE = thesis.tex
 # Name that you would like for your resulting pdf file, without extension.
@@ -16,13 +16,13 @@ MKLATEXOPTS = -pdf -pdflatex="xelatex -interaction=nonstopmode" -use-make
 # 	$(MKLATEX) $(MKLATEXOPTS) $?
 # 	mv demo*.pdf demo/
 
-all: $(PDFNAME).pdf
+all: view
 
 $(PDFNAME).pdf: $(TEXMAINFILE) *.tex
 	$(MKLATEX) $(MKLATEXOPTS) $<
 
 view: $(PDFNAME).pdf
-	$(PDFVIEWER) $(PDFNAME).pdf &
+	$(PDFVIEWER) $(PDFNAME).pdf
 
 clean:
 	$(MKLATEX) -CA
