@@ -1,111 +1,95 @@
-%%% Intro.tex ---
-%%
-%% Filename: Intro.tex
-%% Description:
-%% Author: Ola Leifler
-%% Maintainer:
-%% Created: Thu Oct 14 12:54:47 2010 (CEST)
-%% Version: $Id$
-%% Version:
-%% Last-Updated: Thu May 19 14:12:31 2016 (+0200)
-%%           By: Ola Leifler
-%%     Update #: 5
-%% URL:
-%% Keywords:
-%% Compatibility:
-%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%
-%%% Commentary:
-%%
-%%
-%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%
-%%% Change log:
-%%
-%%
-%% RCS $Log$
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%
-%%% Code:
-
-
 \chapter{Introduction}
 \label{cha:introduction}
 
-The introduction shall be divided into these sections:
+% The introduction shall be divided into these sections:
+Building an graphical user interface is a process that involves many steps. \source{Needs source about gui dev} \todo{what steps?} Being able to iterate several times is key, as this makes it possible to have user feedback tightly integrated into the process. Using a set of tools that allows for these iterations and simultaneously allows the developer to make quick changes is therefore a good step in the direction of building a well functioning user interface.
 
 \section{Motivation}
 \label{sec:motivation}
 
-This is where the studied problem is described from a general
-point of view and put in a context which makes it clear that
-it is interesting and well worth studying. The aim is to make
-the reader interested in the work and create an urge to
-continue reading.
+% This is where the studied problem is described from a general
+% point of view and put in a context which makes it clear that
+% it is interesting and well worth studying. The aim is to make
+% the reader interested in the work and create an urge to
+% continue reading.
+
+Having a framework that allows for user interface components to be designed, developed and improved is a step into making OpenSpace \source{refer to JOSS paper} a software application that may be used by a user with little or no previous experience.
+
+This project is about using web technologies as the foundation of such a framework. Javascript, HTML and CSS \source{refer to standard} is used to built the user interface itself, and communication between the simulation and the user interface is done through web sockets \source{refer to standard}. Evaluating this from a perspective of performance, usability and ease of development may tell if these technologies are well-suited in a C++ based application.
 
 \section{Aim}
 \label{sec:aim}
 
+% What is the underlying purpose of the thesis project?
 
-What is the underlying purpose of the thesis project?
+In this project, a C++ framework called CEF is investigated and added to the OpenSpace application \cite{jossos}. The goal is to improve the pace at which the graphical user interface may be developed and improved. This, in turn, is to be able to improve the overall experience of using OpenSpace \todo{from what perspectives? improve how?}.
+
+Topics that will be investigated are communication, development pace, performance
+
+% The aim of the project presented in this report is to
+
+% \change{don't do this item list}
+% \begin{itemize}
+%   \item find technologies that are useful for graphical user interfaces,
+%   \item implement a way of communication between the graphical user interface and the OpenSpace simulation,
+%   \item implement a set of reusable components \unsure{is components clear enough?} that allows for an initial user interface to be implemented, and
+%   \item implement a graphical user interface prototype.
+% \end{itemize}
 
 \section{Research questions}
 \label{sec:research-questions}
 
 
-This is where the research questions are described.
-Formulate these as explicit questions, terminated with a
-question mark. A report will usually contain several different
-research questions that are somehow thematically connected.
-There are usually 2-4 questions in total.
+% This is where the research questions are described.
+% Formulate these as explicit questions, terminated with a
+% question mark. A report will usually contain several different
+% research questions that are somehow thematically connected.
+% There are usually 2-4 questions in total.
 
-Examples of common types of research questions (simplified
-and generalized):
+In order to find an answer to the above mentioned, broad purpose and aim, the following questions will be answered.
 
 \begin{enumerate}
-\item How does technique X affect the possibility of achieving the
-  effect Y?
-
-\item How can a system (or a solution) for X be realized so
-  that the effect Y is achieved?
-
-\item What are the alternatives to
-  achieving X, and which alternative gives the best effect considering
-  Y and Z? (This research question is normally broken down in to 2
-  separate questions.)
-
+  % Hur vill vi använda OpenSpace i framtiden?
+  % Hur kan man med olika gui-approaches underlätta för slutanvändaren?
+  \item What are the drawbacks and advantages of building a graphical user interface using web technologies?
+  \item How, if at all, can reusable components in a graphical user interface benefit development?
+  \item What are the drawbacks and advantages of communication internally and externally using web sockets?
+  \item How can different approaches to graphical user interface development change the end user's experience?
+  \item How can graphical user interface development affect the future of a software product?
 \end{enumerate}
 
 
-Observe that a very specific research question almost always
-leads to a better thesis report than a general research question
-(it is simply much more difficult to make something good
-from a general research question.)
+% Observe that a very specific research question almost always
+% leads to a better thesis report than a general research question
+% (it is simply much more difficult to make something good
+% from a general research question.)
 
-The best way to achieve a really good and specific research
-question is to conduct a thorough literature review and get
-familiarized with related research and practice. This leads to
-ideas and terminology which allows one to express oneself
-with precision and also have something valuable to say in the
-discussion chapter. And once a detailed research question
-has been specified, it is much easier to establish a suitable
-method and thus carry out the actual thesis work much faster
-than when starting with a fairly general research question. In
-the end, it usually pays off to spend some extra time in the
-beginning working on the literature review. The thesis
-supervisor can be of assistance in deciding when the research
-question is sufficiently specific and well-grounded in related
-research.
+% The best way to achieve a really good and specific research
+% question is to conduct a thorough literature review and get
+% familiarized with related research and practice. This leads to
+% ideas and terminology which allows one to express oneself
+% with precision and also have something valuable to say in the
+% discussion chapter. And once a detailed research question
+% has been specified, it is much easier to establish a suitable
+% method and thus carry out the actual thesis work much faster
+% than when starting with a fairly general research question. In
+% the end, it usually pays off to spend some extra time in the
+% beginning working on the literature review. The thesis
+% supervisor can be of assistance in deciding when the research
+% question is sufficiently specific and well-grounded in related
+% research.
 
 \section{Delimitations}
 \label{sec:delimitations}
 
-This is where the main delimitations are described. For
-example, this could be that one has focused the study on a
-specific application domain or target user group. In the
-normal case, the delimitations need not be justified.
+% This is where the main delimitations are described. For
+% example, this could be that one has focused the study on a
+% specific application domain or target user group. In the
+% normal case, the delimitations need not be justified.
+
+In order to limit the scope of the project, user testing will not be conducted. The project will, in other words, \emph{not} be evaluated from a usability perspective.\unsure{should this be backed up by any arguments, or is this fine? guess it is fine.}
+
+The components built and discussed here is assumed to be used on a regular, desktop or laptop computer. Neither hand held devices, touch interfaces nor immersive environments, such as a dome theatres or virtual reality devices, are part of the main target application.
 
 %\nocite{scigen}
 %We have included Paper \ref{art:scigen}
