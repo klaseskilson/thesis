@@ -1,39 +1,39 @@
-%%% settings.tex --- 
-%% 
+%%% settings.tex ---
+%%
 %% Filename: settings.tex
-%% Description: 
+%% Description:
 %% Author: Ola Leifler
-%% Maintainer: 
+%% Maintainer:
 %% Created: Tue Oct 19 21:11:31 2010 (CEST)
 %% Version: $Id$
-%% Version: 
+%% Version:
 %% Last-Updated: Tue Apr 25 08:49:48 2017 (+0200)
 %%           By: Ola Leifler
 %%     Update #: 43
-%% URL: 
-%% Keywords: 
-%% Compatibility: 
-%% 
+%% URL:
+%% Keywords:
+%% Compatibility:
+%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% 
-%%% Commentary: 
-%% 
-%% 
-%% 
+%%
+%%% Commentary:
+%%
+%%
+%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% 
+%%
 %%% Change log:
-%% 
-%% 
+%%
+%%
 %% RCS $Log$
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% 
+%%
 %%% Code:
 
-\usepackage[backend=biber,hyperref]{biblatex}
+\usepackage[backend=biber,hyperref,giveninits=true]{biblatex}
 %% To set the font of your thesis, use the \setmainfont{} command,
 %% surrounded with \ifxetex if you want to switch between xelatex and pdflatex
-\ifxetex 
+\ifxetex
 %\setmainfont [Scale=1]{Georgia}
 \fi
 
@@ -56,7 +56,7 @@
 \renewcommand\chapnumfont{\Huge\bfseries\centering}
 \renewcommand\chaptitlefont{\Huge\bfseries\raggedright}
 \renewcommand\printchaptertitle[1]{%
-\Vlines\hspace*{-2em}%
+% \Vlines\hspace*{-2em}%
 \begin{tabular}{@{}p{1cm} p{\textwidth-3cm}}%
 \ifNoChapNumber\relax\else%
 \colorbox{black}{\color{white}%
@@ -84,7 +84,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% settings.tex ends here
 
-%%% Local Variables: 
+%%% Local Variables:
 %%% mode: latex
 %%% TeX-master: "demothesis"
-%%% End: 
+%%% End:
