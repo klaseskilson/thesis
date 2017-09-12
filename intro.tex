@@ -13,18 +13,18 @@ Building an graphical user interface is a process that involves many steps. \sou
 % the reader interested in the work and create an urge to
 % continue reading.
 
-Having a framework that allows for user interface components to be designed, developed and improved is a step into making OpenSpace \source{refer to JOSS paper} a software application that may be used by a user with little or no previous experience.
+Having a framework that allows for user interface components to be designed, developed and improved is a step into making OpenSpace \cite{jossos} a software application that may be used by a user with little or no previous experience.
 
-This project is about using web technologies as the foundation of such a framework. Javascript, HTML and CSS \source{refer to standard} is used to built the user interface itself, and communication between the simulation and the user interface is done through web sockets \source{refer to standard}. Evaluating this from a perspective of performance, usability and ease of development may tell if these technologies are well-suited in a C++ based application.
+This project is about using web technologies as the foundation of such a framework. Javascript, HTML and CSS \source{refer to standard} is used to built the user interface itself, and communication between the simulation and the user interface is done through web sockets \cite{fette2011websocket}. Evaluating this from a perspective of performance, usability and ease of development may tell if these technologies are well-suited in a C++ based application.
 
 \section{Aim}
 \label{sec:aim}
 
 % What is the underlying purpose of the thesis project?
 
-In this project, a C++ framework called CEF is investigated and added to the OpenSpace application \cite{jossos}. The goal is to improve the pace at which the graphical user interface may be developed and improved. This, in turn, is to be able to improve the overall experience of using OpenSpace \todo{from what perspectives? improve how?}.
+In this project, a C++ framework called Chromium Embedded Framework (CEF) is investigated and added to the OpenSpace application. The goal is to improve the pace at which the graphical user interface may be developed and improved. This, in turn, is to be able to improve the overall experience of using OpenSpace\todo{from what perspectives? improve how?}. The idea is to make OpenSpace more accessible and easier to understand.
 
-Topics that will be investigated are communication, development pace, performance
+Topics that will be investigated are communication, development pace, performance (in relationship to the other parts of the application and the GUI's impact on the performance in total) and extendibility.
 
 % The aim of the project presented in this report is to
 
@@ -46,16 +46,16 @@ Topics that will be investigated are communication, development pace, performanc
 % research questions that are somehow thematically connected.
 % There are usually 2-4 questions in total.
 
-In order to find an answer to the above mentioned, broad purpose and aim, the following questions will be answered.
+In order to find an answer to the above mentionedw broad purpose and aim, the following questions will be answered.
 
 \begin{enumerate}
   % Hur vill vi använda OpenSpace i framtiden?
   % Hur kan man med olika gui-approaches underlätta för slutanvändaren?
-  \item What are the drawbacks and advantages of building a graphical user interface using web technologies?
-  \item How, if at all, can reusable components in a graphical user interface benefit development?
-  \item What are the drawbacks and advantages of communication internally and externally using web sockets?
-  \item How can different approaches to graphical user interface development change the end user's experience?
-  \item How can graphical user interface development affect the future of a software product?
+  \item What are the drawbacks and advantages of building a graphical user interface using web technologies? \label{q:drawbacks}
+  \item How, if at all, can reusable components in a graphical user interface benefit development? \label{q:reuse}
+  \item What are the drawbacks and advantages of communication internally and externally using web sockets? \label{q:websocket}
+  \item How can different approaches to graphical user interface development change the end user's experience? \label{q:approach}
+  \item How can graphical user interface development affect the future of a software product? \label{q:future}
 \end{enumerate}
 
 
@@ -90,15 +90,3 @@ In order to find an answer to the above mentioned, broad purpose and aim, the fo
 In order to limit the scope of the project, user testing will not be conducted. The project will, in other words, \emph{not} be evaluated from a usability perspective.\unsure{should this be backed up by any arguments, or is this fine? guess it is fine.}
 
 The components built and discussed here is assumed to be used on a regular, desktop or laptop computer. Neither hand held devices, touch interfaces nor immersive environments, such as a dome theatres or virtual reality devices, are part of the main target application.
-
-%\nocite{scigen}
-%We have included Paper \ref{art:scigen}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% Intro.tex ends here
-
-
-%%% Local Variables:
-%%% mode: latex
-%%% TeX-master: "demothesis"
-%%% End:

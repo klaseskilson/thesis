@@ -1,74 +1,102 @@
-%%% lorem.tex ---
-%%
-%%% Commentary:
-%% Building a browser
-%%
-%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%
-%%% Change log:
-%%
-%%
-%% RCS $Log$
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%
-%%% Code:
-
 \chapter{Theory}
 \label{cha:theory}
 
-The main purpose of this chapter is to make it obvious for
-the reader that the report authors have made an effort to read
-up on related research and other information of relevance for
-the research questions. It is a question of trust. Can I as a
-reader rely on what the authors are saying? If it is obvious
-that the authors know the topic area well and clearly present
-their lessons learned, it raises the perceived quality of the
-entire report.
+% The main purpose of this chapter is to make it obvious for
+% the reader that the report authors have made an effort to read
+% up on related research and other information of relevance for
+% the research questions. It is a question of trust. Can I as a
+% reader rely on what the authors are saying? If it is obvious
+% that the authors know the topic area well and clearly present
+% their lessons learned, it raises the perceived quality of the
+% entire report.
 
-After having read the theory chapter it shall be obvious for
-the reader that the research questions are both well
-formulated and relevant.
+% After having read the theory chapter it shall be obvious for
+% the reader that the research questions are both well
+% formulated and relevant.
 
-The chapter must contain theory of use for the intended
-study, both in terms of technique and method. If a final thesis
-project is about the development of a new search engine for
-a certain application domain, the theory must bring up related
-work on search algorithms and related techniques, but also
-methods for evaluating search engines, including
-performance measures such as precision, accuracy and
-recall.
+% The chapter must contain theory of use for the intended
+% study, both in terms of technique and method. If a final thesis
+% project is about the development of a new search engine for
+% a certain application domain, the theory must bring up related
+% work on search algorithms and related techniques, but also
+% methods for evaluating search engines, including
+% performance measures such as precision, accuracy and
+% recall.
 
-The chapter shall be structured thematically, not per author.
-A good approach to making a review of scientific literature
-is to use \emph{Google Scholar} (which also has the useful function
-\emph{Cite}). By iterating between searching for articles and reading
-abstracts to find new terms to guide further searches, it is
-fairly straight forward to locate good and relevant
-information, such as \cite{test}.
+% The chapter shall be structured thematically, not per author.
+% A good approach to making a review of scientific literature
+% is to use \emph{Google Scholar} (which also has the useful function
+% \emph{Cite}). By iterating between searching for articles and reading
+% abstracts to find new terms to guide further searches, it is
+% fairly straight forward to locate good and relevant
+% information, such as \cite{test}.
 
-Having found a relevant article one can use the function for
-viewing other articles that have cited this particular article,
-and also go through the article’s own reference list. Among
-these articles on can often find other interesting articles and
-thus proceed further.
+% Having found a relevant article one can use the function for
+% viewing other articles that have cited this particular article,
+% and also go through the article’s own reference list. Among
+% these articles on can often find other interesting articles and
+% thus proceed further.
 
-It can also be a good idea to consider which sources seem
-most relevant for the problem area at hand. Are there any
-special conference or journal that often occurs one can search
-in more detail in lists of published articles from these venues
-in particular. One can also search for the web sites of
-important authors and investigate what they have published
-in general.
+% It can also be a good idea to consider which sources seem
+% most relevant for the problem area at hand. Are there any
+% special conference or journal that often occurs one can search
+% in more detail in lists of published articles from these venues
+% in particular. One can also search for the web sites of
+% important authors and investigate what they have published
+% in general.
 
-This chapter is called either \emph{Theory, Related Work}, or
-\emph{Related Research}. Check with your supervisor.
+% This chapter is called either \emph{Theory, Related Work}, or
+% \emph{Related Research}. Check with your supervisor.
 
+\section{Web browsers and CEF}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% lorem.tex ends here
+Later in this paper, the implementation of a web browser within Openspace will be presented. But first, what a web browser is, the purpose of a web browser, a web browser's structure and some challenges that web browsers handles needs to be described.
 
-%%% Local Variables:
-%%% mode: latex
-%%% TeX-master: "demothesis"
-%%% End:
+For the sake of clarity, a web browser as discussed in this paper is a software application, or a part of one, that receives an arbitrary web resource in the form of an Uniform Resource Identifier (URI). \cite{jacobs2009uri} It then downloads this resource and presents it in an appropriate fashion.
+
+\subsection{Structure}
+
+I order to meet the requirements of a web browser and handling all the content that is should be supported according to the HTML 5 standard \cite{html}, a web browser becomes an application with a complicated structure. Among several things, media download, web rendering and user interaction should all happen in the same application. All this preferably with little to no delay and without disrupting any of the other tasks.
+
+In the CEF and Chromium projects, the sollution is handling most tasks through a mutli-processes, multi threaded approach. This allows multiple tasks to be handled simultaneously. \cite{cefusage} A user's interactions should ideally not disrupt the playback of a video or a sound, for instance.
+
+\subsection{Executables in CEF}
+
+\todo[inline]{Figure showing the processes, executables and threads}\label{fig:processes}
+
+CEF has support for two different executable models. The implementation uses either one or two separate executables for its sub processes. The processes are launched with different command line arguments that determine the purpose of the launched process. These arguments get sent to either the \texttt{CefExecuteProcess}, which then takes care of determining what needs to be done. The single-executable structure is supported on Windows and Linux system, but not on Macos systems. \cite{cefusage}
+
+In a single-executable implementation of CEF, the return code of \texttt{CefExecuteProcess} is used to determine wether or not execution of that process should be terminated. In a two-executable implementation, the main executable (that also runs the rest of the application) initializes CEF with an option parameter declaring the location of the sub-process executable. In this case, the sub-executable is a single-purpose executable that does little else than calling \texttt{CefExecuteProcess} to allow CEF to handle the incoming task. By using dynamic, shared libraries, the double-executable approach does not necessarily increase the application size, as the two executables share the CEF library.
+
+A potential drawback of a single-executable implementation is that the implementation becomes sensitive to where \texttt{CefExecuteProcess} gets called. If it is late in the application bootup, this may cause delays in CEF's sub-process spawning.
+
+\subsection{Processes in CEF}
+
+In CEF, each different thread and process have separate purposes. They handle different tasks. Although the there might be similarities between the tasks, they are distinct. The main, "browser", process handles window management (towards the host operating system), painting and network access. This process is the same as the host application, where the rest of the application's logic is run.
+
+Another process is called the render process. This is where Blink rendering and javascript execution happens. Blink is Chromium's web rendering engine - it takes formatting information such as CSS style sheets and transform it into the visual result that eventually will be shown. \cite{blink} For safety and robustness, each unique combination of URL scheme and origin will trigger a new render process to be spawned. A URL scheme is the initial part of the URL, usually describing which protocol that should be used. It may look like \texttt{https}, \texttt{http} or \texttt{ftp}. The origin is in this case the domain name or IP address of the URL. By default, Chromium does not separate web pages from different sub domains (\texttt{one.example.com} and \texttt{two.example.com}) or ports (\texttt{example.com:80} and \texttt{example.com:443}). \cite{processes} This separation and reusability of processes is considered to give a good balance of safety and computing resource usage at the same time as allowing instances of different web pages from the same web site to access each other according to the enforced security policy. \cite{network10same}
+
+The other processes that may be spawned by CEF are related to so called plugins. These might be if a web site wants to show content that are developed by a third party, for instance. This might be Flash content, Java aplets, or similar. GPU powered content are also being handled by a separate process.
+
+An overview of the different processes together with its executables and threads can be seen in figure \ref{fig:processes}.
+
+\subsection{Threads in CEF}
+
+Each process in CEF is also multi threaded. This is where the multi-dimensional parallelism structure of CEF comes in. The different threads handle different aspects of constructing the requested web page. As mentioned in \cite{cefusage}, there are many different threads used by different processes. The most common ones are:
+
+\begin{itemize}
+  \item The \textbf{UI} thread. This is the main thread of the browser process. It is the thread where the function \texttt{CefInitialize} is called to initialize the CEF framework.
+  \item The \textbf{IO} thread, where inter-process messaging is handled and where network messages are processed.
+  \item The \textbf{renderer} thread, which is the main thread of the renderer process.
+\end{itemize}
+
+\subsection{Challenges}
+
+\section{Web socket}
+
+Web sockets is an extension of TCP sockets made for effortless socket handling.
+
+\section{react}
+\todo[inline]{react}
+\section{data management}
+\todo[inline]{data management}
