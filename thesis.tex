@@ -35,7 +35,8 @@
 \include{settings}
 \usepackage{rotating}
 \usepackage{color}
-
+\usepackage{graphicx}
+\usepackage{listings}
 \usepackage{xargs}                      % Use more than one optional parameter in a new commands
 % \usepackage[pdftex,dvipsnames]{xcolor}  % Coloured text etc.
 \usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
@@ -46,6 +47,17 @@
 \newcommandx{\info}[2][1=]{\todo[linecolor=OliveGreen,backgroundcolor=OliveGreen!25,bordercolor=OliveGreen,#1]{#2}}
 \newcommandx{\improvement}[2][1=]{\todo[linecolor=Plum,backgroundcolor=Plum!25,bordercolor=Plum,#1]{#2}}
 \newcommandx{\thiswillnotshow}[2][1=]{\todo[disable,#1]{#2}}
+
+%% Style code entries
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstset{
+    backgroundcolor=\color{backcolour},
+    breaklines=true,
+    captionpos=b,                    % sets the caption-position to bottom
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+}
 
 % \usepackage{changebar}
 

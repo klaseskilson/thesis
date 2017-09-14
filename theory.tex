@@ -62,9 +62,13 @@ In the CEF and Chromium projects, the sollution is handling most tasks through a
 
 \subsection{Executables in CEF}
 
-\todo[inline]{Figure showing the processes, executables and threads}\label{fig:processes}
+\begin{figure}[h]\label{fig:processes}
+\centering
+\includegraphics[width=0.9\linewidth]{./figures/process.pdf}
+\caption{\emph{An overview of the two-executable structure with processes and threads.}}
+\end{figure}
 
-CEF has support for two different executable models. The implementation uses either one or two separate executables for its sub processes. The processes are launched with different command line arguments that determine the purpose of the launched process. These arguments get sent to either the \texttt{CefExecuteProcess}, which then takes care of determining what needs to be done. The single-executable structure is supported on Windows and Linux system, but not on Macos systems. \cite{cefusage}
+CEF has support for two different executable models. The implementation uses either one or two separate executables for its sub processes. An overview can be seen in figure \ref{fig:processes}. The processes are launched with different command line arguments that determine the purpose of the launched process. These arguments get sent to either the \texttt{CefExecuteProcess}, which then takes care of determining what needs to be done. The single-executable structure is supported on Windows and Linux system, but not on Macos systems. \cite{cefusage}
 
 In a single-executable implementation of CEF, the return code of \texttt{CefExecuteProcess} is used to determine wether or not execution of that process should be terminated. In a two-executable implementation, the main executable (that also runs the rest of the application) initializes CEF with an option parameter declaring the location of the sub-process executable. In this case, the sub-executable is a single-purpose executable that does little else than calling \texttt{CefExecuteProcess} to allow CEF to handle the incoming task. By using dynamic, shared libraries, the double-executable approach does not necessarily increase the application size, as the two executables share the CEF library.
 
@@ -92,11 +96,60 @@ Each process in CEF is also multi threaded. This is where the multi-dimensional 
 
 \subsection{Challenges}
 
-\section{Web socket}
+\section{Web sockets}
 
-Web sockets is an extension of TCP sockets made for effortless socket handling.
+The Web socket technology is an extension of TCP sockets made for two-way communication between a client and a host. The protocol uses TCP \cite{postel1981transmission} as the transport layer. By using HTTP to complete a handshaking process, a persistent connection between the peers may be esatablished. This means that no further handshaking is required, since the TCP connection remains open. Web sockets are essentially a layer on top of TCP that adds web targeted security model, an addressing and naming mechanism to support several services on one port, a framing mechanism to describe the messages and some other more handshaking related mechanisms. \cite{fette2011websocket}
 
-\section{react}
-\todo[inline]{react}
-\section{data management}
-\todo[inline]{data management}
+Arbitrary UTF-8 \cite{RFC3629} text messages or binary data may be sent over the connection. These are interpeted as standalone messages, and the peers should treat them as such. This differs from raw sockets where the messaging back and forth can be seen as streams, and where some sort of breaking character or sequence must be used to distinguish messages from each other. The web socket frame header contains details of how long the message is, and this tells the clients how to interpret the received frames and where the frames end.
+
+Web socket supports both unecrypted messages with the uri scheme \texttt{ws://} and encrypted messages over TLS \cite{RFC5246} with the control sequence \texttt{wss://}.
+
+\subsection{Establishing and closing connections}
+
+In order to establish a web socket connection, a handshake process using HTTP is used. The client requests a protocol upgrade to the web socket protocol. The successfull response to the client-initiated request is a HTTP 101 response, stating that the used protocol should be switched. \cite[section 10.1.2]{RFC2616} See \cite{RFC2616} for further details on the client's request.
+
+The server also has mechanisms to proove the validity of the response. This is done by combining two pieces of information; the \texttt{Sec-WebSocket-Key} value from the client's request and the fixed string \texttt{258EAFA5-E914-47DA-95CA-C5AB0DC85B11}. By concatenating these two and base64-encoding \cite{base64} the hash of the combination generated using SHA-1 \cite{RFC3174}, the client may verify the server's response. The fixed string is assumed to not be used by any other protocol. This should validate the connection, so that the client knows that the server is compatible.
+
+To close a connection, another handshaking mechanism is in place. This is on top of the TCP connection closing mechanism, as that is not always end-to-end reliable and connections may be in a half-closed state with messages not yet fully transmitted. \cite[section 4.2.2.13]{RFC1122} The web socket closing mechanism relies on a confirmation, where the first peer initiates the closing by sending a close frame and the second peer sends a close frame in response. This way, the number of cases where data is lost in a half-closed state is reduced. Both peers may initiate the close handshake simultaneously.
+
+When closing the connection, an optional reason code may be provided to explain why the connection is being closed. This can be used to allow the other peer to make a good decision in how to act after the closing.
+
+\section{Javascript UI framework React}
+
+React is an open source javascript framework for building user interfaces. It manipulates the web browser's document object model (DOM) to provide the developer with an API (application programming interface) to build the interface. It uses a declarative paradigm to allow the developer to create components. \cite{react} These components may be reused and are highly configurable for the developer.
+
+In React, the user interface can be described as a function of the the application's state. In a mathematical context, this may be described as $UI = f(state)$. The state of a React component is either owned by itself, in which case it is called \emph{state}, or it may be passed down from the parent component, in which case it is called \emph{props}, or it may be a combination of the two.
+
+React components may be written is different ways. Either using the ES5-style \cite{es5} \texttt{React.createReactClass}, using ES6-style \cite{es6} class extending or as so-called pure functional components, which essentially are functions returning valid React elements.
+
+\subsection{JSX}\label{sec:jsx}
+
+How React elements are written may vary, too. With React, a XML-like javascript subset called JSX was developed. See Listing~\ref{lst:jsx} for a simple example. The second option is using the React API with the \texttt{React.createElement} method, see Listing~\ref{lst:element}.
+
+\begin{lstlisting}[caption={Simple JSX example snippet},label=lst:jsx]
+const element = <h1>Hello, world!</h1>;
+\end{lstlisting}
+
+\begin{lstlisting}[caption={Usage of React.createElement},label=lst:element]
+// React.createElement(component, props, children);
+React.createElement('div', null, 'Hello World');
+\end{lstlisting}
+
+By removing the need for advanced API usage, such as \texttt{React.createElement}, and replacing it with the XML-like syntax, JSX allows the developer to understand what the end component will look like faster. JSX also comes with other features. One is HTML injection prevention to ensure no malicious HTML gets injected to the page. Another is a simplified syntax for dynamic element attributes, see Listing~\ref{lst:attributes}.
+
+\begin{lstlisting}[caption={Element attributes in JSX},label=lst:attributes]
+const url = 'image.png';
+const element = <img src={url} />;
+\end{lstlisting}
+
+\section{Transpiling}
+
+In order to use modern javascript features without loosing support for older web browsers and servers that doesn't yet support these features, a technique called \emph{transpiling} (combination of \emph{transformation} and \emph{compilation}) can be used. \cite[p. 3-4]{youdontknowjs} These features are amongst others classes and inheritance, modules, arrow functions and object destructuring. The technique is also used for JSX (see section \ref{sec:jsx} JSX).
+
+This technique transforms the newer syntax to an older, more well-supported syntax automatically. This is oftenly done through adding a build-step into the development workflow, similar to linting and other operations. This process isn't needed for all new javascript features, as some can be added to the programming environment by the developer through another technique called polyfills. \cite[p. 4-5]{youdontknowjs}
+
+\section{Data serialization: JSON}
+
+JSON (JavaScript Object Notation) is a data format useful for serializing arbitrary data types into a transport-friendly format. It is a text format, meaning it is readable. In it, strings, numbers, booleans, and null-values can be stored. Structural types are arrays of objects. The syntax is derived from the object and array syntax of javascript. \cite{json}
+
+\todo[inline]{what else?}
