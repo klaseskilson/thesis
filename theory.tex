@@ -58,7 +58,11 @@ For the sake of clarity, a web browser as discussed in this paper is a software 
 
 I order to meet the requirements of a web browser and handling all the content that is should be supported according to the HTML 5 standard \cite{html}, a web browser becomes an application with a complicated structure. Among several things, media download, web rendering and user interaction should all happen in the same application. All this preferably with little to no delay and without disrupting any of the other tasks.
 
-In the CEF and Chromium projects, the sollution is handling most tasks through a mutli-processes, multi threaded approach. This allows multiple tasks to be handled simultaneously. \cite{cefusage} A user's interactions should ideally not disrupt the playback of a video or a sound, for instance.
+In the CEF and Chromium projects, the sollution is handling most tasks through a mutli-processes, multi threaded approach. \cite{cefusage} This allows multiple tasks to be handled simultaneously. A user's interactions should ideally not disrupt the playback of a video or a sound, for instance.
+
+\todo[inline]{events?}
+\todo[inline]{rendering?}
+\todo[inline]{off screen rendering?}
 
 \subsection{Executables in CEF}
 

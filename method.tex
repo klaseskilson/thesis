@@ -1,56 +1,82 @@
-%%% lorem.tex --- 
-%% 
+%%% lorem.tex ---
+%%
 %% Filename: lorem.tex
-%% Description: 
+%% Description:
 %% Author: Ola Leifler
-%% Maintainer: 
+%% Maintainer:
 %% Created: Wed Nov 10 09:59:23 2010 (CET)
 %% Version: $Id$
-%% Version: 
+%% Version:
 %% Last-Updated: Wed Nov 10 09:59:47 2010 (CET)
 %%           By: Ola Leifler
 %%     Update #: 2
-%% URL: 
-%% Keywords: 
-%% Compatibility: 
-%% 
+%% URL:
+%% Keywords:
+%% Compatibility:
+%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% 
-%%% Commentary: 
-%% 
-%% 
-%% 
+%%
+%%% Commentary:
+%%
+%%
+%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% 
+%%
 %%% Change log:
-%% 
-%% 
+%%
+%%
 %% RCS $Log$
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% 
+%%
 %%% Code:
 
 \chapter{Method}
 \label{cha:method}
 
-In this chapter, the method is described in a way which shows how the
-work was actually carried out. The description must be precise and
-well thought through. Consider the scientific term
-replicability. Replicability means that someone reading a scientific
-report should be able to follow the method description and then carry
-out the same study and check whether the results obtained are
-similar. Achieving replicability is not always relevant, but precision
-and clarity is.
+% In this chapter, the method is described in a way which shows how the
+% work was actually carried out. The description must be precise and
+% well thought through. Consider the scientific term
+% replicability. Replicability means that someone reading a scientific
+% report should be able to follow the method description and then carry
+% out the same study and check whether the results obtained are
+% similar. Achieving replicability is not always relevant, but precision
+% and clarity is.
 
-Sometimes the work is separated into different parts, e.g.  pre-study,
-implementation and evaluation. In such cases it is recommended that
-the method chapter is structured accordingly with suitable named
-sub-headings.
+% Sometimes the work is separated into different parts, e.g.  pre-study,
+% implementation and evaluation. In such cases it is recommended that
+% the method chapter is structured accordingly with suitable named
+% sub-headings.
+
+The project can be divided into three major parts; the web browser, the server and simulation control, and the GUI. They were roughly developed in this order, with some overlapping and fixes.
+
+\section{Web browser}
+
+Initially in the project, the requirements and structure of CEF was investigated. This was to as quick as possible determine wether or not including CEF in Openspace and its OpenGL structure would work. It was found that both Openspace and CEF uses Cmake as the build system-of-choice. This allowed the work to continue.
+
+CEF provided Cmake bootstraping helpers, to download the binary library files for the framework. Depending on what platform and architecture that the developer was using, the helper automatically detected this and downloaded the needed binaries from CEF's web page. By combining this with Openspace's Cmake module system, a web browser module was added to the build process. This downloaded, unpacked and included the needed CEF files. Some compiler flags that CEF's Cmake instructions inserted into the build process were not supported by Openspace and created issues at build time. Manually removing these from the downloaded CEF structure resolved that issue.
+
+When the project was successfully compiling with the CEF includes, the next step was to start implementing the rendering mechanism for the the web browser. This was done by using a rendering method called Off Screen Rendering (OSR) in CEF, that allows the developer to use a callback for whenever the web page needs to be rerendered. After the rendering was in place, the user interaction was the next step. This was done by using the event handlers that already exists in Openspace and sending them to CEF. The key events, however, needed to be handled differently. The modifier keys, such as control, shift and alt, needed to be translated from \todo{what?} to \todo{what?} in order to CEF to understand them.
+
+When rendering and user interaction was in place, the next step was to implement a web socket interface.
+
+Most of the documentation of CEF is focused on building a new application, not so much to implement it into an existing code base. \todo{move this to discussion or so}
+
+\section{Socket server and simulation control}
+
+In order to allow the GUI to control the simulation in Openspace, a way of communicating between the user's interactions in the GUI and the simulation engine needed to be put into place. CEF and Chromium has a fully working web socket client built in, which is why web socket was considered a good option for communication.
+
+Two different web socket libraries were considered: \emph{Libwebsockets} and \emph{Websocket++}. Libwebsockets is, however, single threaded and written in C, not C++ like Openspace. \cite{lwssingle} Websocket++ is written in C++ and has built-in multithreaded support. By using the already existing TCP socket abstraction that existed in Openspace, websocket support was added.
+
+\todo[inline]{write about server}
+
+\section{GUI development}
+
+\todo[inline]{write about gui}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% lorem.tex ends here
 
-%%% Local Variables: 
+%%% Local Variables:
 %%% mode: latex
 %%% TeX-master: "demothesis"
-%%% End: 
+%%% End:
