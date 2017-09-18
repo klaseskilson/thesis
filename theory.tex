@@ -100,25 +100,32 @@ Each process in CEF is also multi threaded. This is where the multi-dimensional 
 
 \subsection{Challenges}
 
+\todo[inline]{write about challenges?}
+
 \section{Web sockets}
 
-The Web socket technology is an extension of TCP sockets made for two-way communication between a client and a host. The protocol uses TCP \cite{postel1981transmission} as the transport layer. By using HTTP to complete a handshaking process, a persistent connection between the peers may be esatablished. This means that no further handshaking is required, since the TCP connection remains open. Web sockets are essentially a layer on top of TCP that adds web targeted security model, an addressing and naming mechanism to support several services on one port, a framing mechanism to describe the messages and some other more handshaking related mechanisms. \cite{fette2011websocket}
+The Web socket technology is an extension of TCP sockets made for two-way communication between a client and a host. The protocol uses TCP \cite{postel1981transmission} as the transport layer. By using HTTP to complete a handshaking process, a persistent connection between the peers may be established. This means that no further handshaking is required, since the TCP connection remains open. Web sockets are essentially a layer on top of TCP that adds web targeted security model, an addressing and naming mechanism to support several services on one port, a framing mechanism to describe the messages and some other more handshaking related mechanisms. \cite{fette2011websocket}
 
-Arbitrary UTF-8 \cite{RFC3629} text messages or binary data may be sent over the connection. These are interpeted as standalone messages, and the peers should treat them as such. This differs from raw sockets where the messaging back and forth can be seen as streams, and where some sort of breaking character or sequence must be used to distinguish messages from each other. The web socket frame header contains details of how long the message is, and this tells the clients how to interpret the received frames and where the frames end.
+Arbitrary UTF-8 \cite{RFC3629} text messages or binary data may be sent over the connection. These are interpreted as standalone messages, and the peers should treat them as such. This differs from raw sockets where the messaging back and forth can be seen as streams, and where some sort of breaking character or sequence must be used to distinguish messages from each other. The web socket frame header contains details of how long the message is, and this tells the clients how to interpret the received frames and where the frames end.
 
-Web socket supports both unecrypted messages with the uri scheme \texttt{ws://} and encrypted messages over TLS \cite{RFC5246} with the control sequence \texttt{wss://}.
+Web socket supports both unencrypted messages with the URI scheme \texttt{ws://} and encrypted messages over TLS \cite{RFC5246} with the control sequence \texttt{wss://}.
 
 \subsection{Establishing and closing connections}
 
-In order to establish a web socket connection, a handshake process using HTTP is used. The client requests a protocol upgrade to the web socket protocol. The successfull response to the client-initiated request is a HTTP 101 response, stating that the used protocol should be switched. \cite[section 10.1.2]{RFC2616} See \cite{RFC2616} for further details on the client's request.
+In order to establish a web socket connection, a handshake process using HTTP is used. The client requests a protocol upgrade to the web socket protocol. The successful response to the client-initiated request is a HTTP 101 response, stating that the used protocol should be switched. \cite[section 10.1.2]{RFC2616} See \cite{RFC2616} for further details on the client's request.
 
-The server also has mechanisms to proove the validity of the response. This is done by combining two pieces of information; the \texttt{Sec-WebSocket-Key} value from the client's request and the fixed string \texttt{258EAFA5-E914-47DA-95CA-C5AB0DC85B11}. By concatenating these two and base64-encoding \cite{base64} the hash of the combination generated using SHA-1 \cite{RFC3174}, the client may verify the server's response. The fixed string is assumed to not be used by any other protocol. This should validate the connection, so that the client knows that the server is compatible.
+The server also has mechanisms to prove the validity of the response. This is done by combining two pieces of information; the \texttt{Sec-WebSocket-Key} value from the client's request and the fixed string \texttt{258EAFA5-E914-47DA-95CA-C5AB0DC85B11}. By concatenating these two and \emph{Base64}-encoding \cite{base64} the hash of the combination generated using SHA-1 \cite{RFC3174}, the client may verify the server's response. The fixed string is assumed to not be used by any other protocol. This should validate the connection, so that the client knows that the server is compatible.
 
 To close a connection, another handshaking mechanism is in place. This is on top of the TCP connection closing mechanism, as that is not always end-to-end reliable and connections may be in a half-closed state with messages not yet fully transmitted. \cite[section 4.2.2.13]{RFC1122} The web socket closing mechanism relies on a confirmation, where the first peer initiates the closing by sending a close frame and the second peer sends a close frame in response. This way, the number of cases where data is lost in a half-closed state is reduced. Both peers may initiate the close handshake simultaneously.
 
 When closing the connection, an optional reason code may be provided to explain why the connection is being closed. This can be used to allow the other peer to make a good decision in how to act after the closing.
 
-\section{Javascript UI framework React}
+\section{Javascript UI frameworks}
+
+Web application development has over the years gotten more powerful as the available browser technologies and computing power has advanced. It involves more steps and the web browser takes care of more than only rendering HTML and CSS. There are multiple different web application frameworks today that helps the developer by abstracting away complexity.
+
+\subsection{React}
+\label{sub:react}
 
 React is an open source javascript framework for building user interfaces. It manipulates the web browser's document object model (DOM) to provide the developer with an API (application programming interface) to build the interface. It uses a declarative paradigm to allow the developer to create components. \cite{react} These components may be reused and are highly configurable for the developer.
 
@@ -126,7 +133,7 @@ In React, the user interface can be described as a function of the the applicati
 
 React components may be written is different ways. Either using the ES5-style \cite{es5} \texttt{React.createReactClass}, using ES6-style \cite{es6} class extending or as so-called pure functional components, which essentially are functions returning valid React elements.
 
-\subsection{JSX}\label{sec:jsx}
+\subsubsection{JSX}\label{sec:jsx}
 
 How React elements are written may vary, too. With React, a XML-like javascript subset called JSX was developed. See Listing~\ref{lst:jsx} for a simple example. The second option is using the React API with the \texttt{React.createElement} method, see Listing~\ref{lst:element}.
 
@@ -146,11 +153,35 @@ const url = 'image.png';
 const element = <img src={url} />;
 \end{lstlisting}
 
+\subsection{Other front end frameworks} % (fold)
+\label{sub:angular_and_others}
+
+Angular, Vue, Backbone and Ember are some of the most popular web development frameworks available today, alongside React. \cite{stateofjs} These frameworks solve similar issues to React, but with varying philosophies and solutions. What also varies is the satisfaction among the developers, see table \ref{table:frameworks}. The \emph{developers} number show number of developer who said they have experience in the given framework. \emph{Satisfaction} are the percentage of developers that said they would use the framework again.
+
+\begin{table}
+  \begin{center}
+    \label{table:frameworks}
+    \begin{tabular}{l | r l}
+      \textbf{Framework} & \textbf{Developers} & \textbf{Satisfaction} \\
+      \hline
+      React & 3044 & 92\% \\
+      Angular & 3391 & 47\% \\
+      Angular 2 & 1056 & 65\% \\
+      Ember & 850 & 48\% \\
+      Vue & 577 & 89\% \\
+      Backbone & 2077 & 32\%
+    \end{tabular}
+    \caption{Table showing developer satisfaction, from \cite{stateofjs}. }
+  \end{center}
+\end{table}
+
+React and Vue are the most popular frameworks among their respective developers with satisfaction of 92\% and 89\%. Angular is the most used framework, but also with the second to lowest satisfaction rate at 47\%. Angular 2 has the third highest satisfaction rate at 65\%, and is a complete rewrite from Angular. \cite{angular} Backbone is the framework with the lowest satisfaction at 32\%.
+
 \section{Transpiling}
 
 In order to use modern javascript features without loosing support for older web browsers and servers that doesn't yet support these features, a technique called \emph{transpiling} (combination of \emph{transformation} and \emph{compilation}) can be used. \cite[p. 3-4]{youdontknowjs} These features are amongst others classes and inheritance, modules, arrow functions and object destructuring. The technique is also used for JSX (see section \ref{sec:jsx} JSX).
 
-This technique transforms the newer syntax to an older, more well-supported syntax automatically. This is oftenly done through adding a build-step into the development workflow, similar to linting and other operations. This process isn't needed for all new javascript features, as some can be added to the programming environment by the developer through another technique called polyfills. \cite[p. 4-5]{youdontknowjs}
+This technique transforms the newer syntax to an older, more well-supported syntax automatically. This is often done through adding a build-step into the development workflow, similar to linting and other operations. This process isn't needed for all new javascript features, as some can be added to the programming environment by the developer through another technique called polyfills. \cite[p. 4-5]{youdontknowjs}
 
 \section{Data serialization: JSON}
 

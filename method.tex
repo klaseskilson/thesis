@@ -55,7 +55,7 @@ Initially in the project, the requirements and structure of CEF was investigated
 
 CEF provided Cmake bootstraping helpers, to download the binary library files for the framework. Depending on what platform and architecture that the developer was using, the helper automatically detected this and downloaded the needed binaries from CEF's web page. By combining this with Openspace's Cmake module system, a web browser module was added to the build process. This downloaded, unpacked and included the needed CEF files. Some compiler flags that CEF's Cmake instructions inserted into the build process were not supported by Openspace and created issues at build time. Manually removing these from the downloaded CEF structure resolved that issue.
 
-When the project was successfully compiling with the CEF includes, the next step was to start implementing the rendering mechanism for the the web browser. This was done by using a rendering method called Off Screen Rendering (OSR) in CEF, that allows the developer to use a callback for whenever the web page needs to be rerendered. After the rendering was in place, the user interaction was the next step. This was done by using the event handlers that already exists in Openspace and sending them to CEF. The key events, however, needed to be handled differently. The modifier keys, such as control, shift and alt, needed to be translated from \todo{what?} to \todo{what?} in order to CEF to understand them.
+When the project was successfully compiling with the CEF includes, the next step was to start implementing the rendering mechanism for the the web browser. This was done by using a rendering method called Off Screen Rendering (OSR) in CEF, that allows the developer to use a callback for whenever the web page needs to be rerendered. After the rendering was in place, the user interaction was the next step. This was done by using the event handlers that already exists in Openspace and sending them to CEF. The key events, however, needed to be handled differently. The modifier keys, such as control, shift and option, needed to be translated from \todo{what?} to \todo{what?} in order to CEF to understand them.
 
 When rendering and user interaction was in place, the next step was to implement a web socket interface.
 
@@ -65,13 +65,19 @@ Most of the documentation of CEF is focused on building a new application, not s
 
 In order to allow the GUI to control the simulation in Openspace, a way of communicating between the user's interactions in the GUI and the simulation engine needed to be put into place. CEF and Chromium has a fully working web socket client built in, which is why web socket was considered a good option for communication.
 
-Two different web socket libraries were considered: \emph{Libwebsockets} and \emph{Websocket++}. Libwebsockets is, however, single threaded and written in C, not C++ like Openspace. \cite{lwssingle} Websocket++ is written in C++ and has built-in multithreaded support. By using the already existing TCP socket abstraction that existed in Openspace, websocket support was added.
+Two different web socket libraries were considered: \emph{Libwebsockets} and \emph{Websocket++}. Libwebsockets is, however, single threaded and written in C, not C++ like Openspace. \cite{lwssingle} Websocket++ is written in C++ and has built-in multi-threaded support. By using the already existing TCP socket abstraction that existed in Openspace, web socket support was added. The existing abstraction allowed for easy access to the platform-dependant APIs that adds socket access.
 
-\todo[inline]{write about server}
+To allow for simulation control, a number of different so-called topics were implemented. These topics have different purposes and were used to control the simulation.
+
+When the socket interface and simulation control were in place, the next step was to start developing the GUI.
 
 \section{GUI development}
 
-\todo[inline]{write about gui}
+Initially in the GUI process, a design was created in the design tool Figma. The design was shared with the rest of the Openspace team, so that early thoughts and ideas could be collected. With an initial round of feedback, research was put into the architecture of the GUI.
+
+Mainly two different javascript frameworks for GUI development was considered. React and Angular. \todo{discuss and point at http://stateofjs.com/2016/frontend/} Due to previous experience, the selection leaned in favour of React. While continuing creating design mockups and gathering feedback, the GUI was simultaneously developed.
+
+The basic layout was created, and a data management layer implemented. This layer corresponded to the topics on the server side, and allowed the developer to perform common actions such as setting, getting and subscribing to simulation properties. Next, special cases such as simulation time was handled. After that, the common property editor sidebar was implemented along with origin focus selection. \todo{continue? more needed?}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% lorem.tex ends here
