@@ -66,10 +66,10 @@ In the CEF and Chromium projects, the sollution is handling most tasks through a
 
 \subsection{Executables in CEF}
 
-\begin{figure}[h]\label{fig:processes}
+\begin{figure}[h]
 \centering
 \includegraphics[width=0.9\linewidth]{./figures/process.pdf}
-\caption{\emph{An overview of the two-executable structure with processes and threads.}}
+\caption{\emph{An overview of the two-executable structure with processes and threads.}}\label{fig:processes}
 \end{figure}
 
 CEF has support for two different executable models. The implementation uses either one or two separate executables for its sub processes. An overview can be seen in figure \ref{fig:processes}. The processes are launched with different command line arguments that determine the purpose of the launched process. These arguments get sent to either the \texttt{CefExecuteProcess}, which then takes care of determining what needs to be done. The single-executable structure is supported on Windows and Linux system, but not on Macos systems. \cite{cefusage}

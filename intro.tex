@@ -22,9 +22,9 @@ This project is about using web technologies as the foundation of such a framewo
 
 % What is the underlying purpose of the thesis project?
 
-In this project, a C++ framework called Chromium Embedded Framework (CEF) is investigated and added to the OpenSpace application. The goal is to improve the pace at which the graphical user interface may be developed and improved. This, in turn, is to be able to improve the overall experience of using OpenSpace\todo{from what perspectives? improve how?}. The idea is to make OpenSpace more accessible and easier to understand.
+In this project, a C++ framework called Chromium Embedded Framework (CEF) is investigated and added to the Openspace application. The goal is to improve the pace at which the graphical user interface may be developed and improved. This, in turn, is to be able to improve the overall experience of using Openspace. The idea is to make Openspace more accessible and easier to understand for both experienced and new users. CEF is a web browser framework, allowing its host application to browse, render and interact with an arbitrary web site.
 
-Topics that will be investigated are communication, development pace, performance (in relationship to the other parts of the application and the GUI's impact on the performance in total) and extendibility.
+Topics that will be investigated are communication, development pace, performance (in relationship to the other parts of the application and the GUI's impact on the performance in total) and extendibility. This means, can the GUI easilly be improved and extended, so that control of future functionallity may reach the user?
 
 % The aim of the project presented in this report is to
 
@@ -46,14 +46,14 @@ Topics that will be investigated are communication, development pace, performanc
 % research questions that are somehow thematically connected.
 % There are usually 2-4 questions in total.
 
-In order to find an answer to the above mentionedw broad purpose and aim, the following questions will be answered.
+In order to find an answer to the above mentioned broad purpose and aim, the following questions will be answered.
 
 \begin{enumerate}
   % Hur vill vi använda OpenSpace i framtiden?
   % Hur kan man med olika gui-approaches underlätta för slutanvändaren?
   \item What are the drawbacks and advantages of building a graphical user interface using web technologies? \label{q:drawbacks}
   \item How, if at all, can reusable components in a graphical user interface benefit development? \label{q:reuse}
-  \item What are the drawbacks and advantages of communication internally and externally using web sockets? \label{q:websocket}
+  \item What are the drawbacks and advantages of communicating internally and externally using web sockets? \label{q:websocket}
   \item How can different approaches to graphical user interface development change the end user's experience? \label{q:approach}
   \item How can graphical user interface development affect the future of a software product? \label{q:future}
 \end{enumerate}
@@ -87,8 +87,8 @@ In order to find an answer to the above mentionedw broad purpose and aim, the fo
 % specific application domain or target user group. In the
 % normal case, the delimitations need not be justified.
 
-In order to limit the scope of the project, user testing will not be conducted. The project will, in other words, \emph{not} be evaluated from a usability perspective.\unsure{should this be backed up by any arguments, or is this fine? guess it is fine.}
+In order to limit the scope of the project, user testing will not be conducted. The project will, in other words, \emph{not} be evaluated from a usability perspective.
 
-The components built and discussed here is assumed to be used on a regular, desktop or laptop computer. Neither hand held devices, touch interfaces nor immersive environments, such as a dome theatres or virtual reality devices, are part of the main target application.
+The components built and discussed here is assumed to be used on a computer, laptop or desktop. Neither hand held devices, touch interfaces nor immersive environments, such as a dome theatres or virtual reality devices, are the target of the user interface.
 
-Will some parts of the project works across several platforms, Microsoft Windows 10 has been used as the primary development platform. No extra work has been put into making the project work across the other platforms (Linux and Macos) that Openspace supports.
+While some parts of the project works across several platforms, Microsoft Windows 10 has been used as the primary development platform. No work has been put into making the project work on Linux or Macos, which Openspace normally supports.
