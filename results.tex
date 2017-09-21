@@ -82,4 +82,155 @@ The rendering is a two-part process. First, CEF renders the web page to a buffer
 To reduce the computing power needed, CEF only updates the buffer when something on the web page gets changed and a repaint of the web page is needed. This can be a colour changing, text changing, box moving or anything similar. Regardless of the magnitude of the change or the cause of this change, the whole buffer gets replaced. This affects both the transparency mask mentioned in section \ref{sec:interaction} and the buffer that gets copied to the GPU for rendering. Depending on the internal bandwidth of the computer, this copying from the RAM to the GPU might be a time consuming task, affecting the performance of the simulation. The implications of this will be discussed later. \todo{discuss ram to gpu copying}
 
 \section{Socket server and simulation control}
-\section{GUI development}
+
+To make sure that the simulation actually was controllable from the GUI, ways of communicating between the simulation and the GUI needed to be put into place. This was done by implementing a web socket server within Openspace. The GUI and socket server send JSON messages back and forth with instructions and information. An example request can be seen in listing \ref{lst:request}.
+
+\begin{lstlisting}[caption={Example request sent by the GUI},label=lst:request]
+{
+  "type": "example",
+  "topic": 1,
+  "payload": {}
+}
+\end{lstlisting}
+
+There are some element in this JSON body that are needed for each request:
+
+\begin{itemize}
+\item \texttt{type} is a string that describes what type of message this is, and should correspond to one of the implemented \emph{Topics} (more on this later),
+\item \texttt{topic} is a required numeric identifier for this message and its possible responses, and
+\item \texttt{payload} is a object containing the message details and has further instructions.
+\end{itemize}
+
+A response from the socket server can be seen in listing \ref{lst:response}. Here, the \texttt{type} is no longer needed. The client should be aware of the \texttt{topic}, as there are no messages sent on the server's initiative.
+
+\begin{lstlisting}[caption={Example request sent by the GUI},label=lst:response]
+{
+  "topic": 1,
+  "payload": {}
+}
+\end{lstlisting}
+
+\subsection{Types of requests and responses}
+
+The different types of requests are called topics. There are a number of different types, each with a separate purpose. The implemented topics are:
+
+\begin{itemize}
+  \item \emph{authorize}, used to authorize a connection,
+  \item \emph{bounce}, a ping-like mechanism, that simply bounces back a response,
+  \item \emph{get}, get the value of a given \emph{property},
+  \item \emph{lua script}, run arbitrary Lua scripts in the Openspace environment,
+  \item \emph{set}, set the value of a given \emph{property},
+  \item \emph{subscription}, subscribe to the value of a given \emph{property},
+  \item \emph{time}, various special-case time related operations, and
+  \item \emph{trigger}, trigger a \emph{trigger property}.
+\end{itemize}
+
+The \emph{properties} mentioned in the list above are Openspace properties that may be attached to an object. These objects can for instance be groups of settings, a planet in the scene or the stars in the background. Each property has a URI-like key parameter, that may describe which object it belongs to and what this specific property is named. There are also different types of properties; string, numeric, boolean, trigger, vector and matrix. An overview of the property sending mechanism can be seen in figure \ref{fig:propertysending}. \todo{consider moving this to theory?}
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.9\linewidth]{./figures/propertysending.png}
+\caption{\emph{Overview of the property sending mechanism.}}\label{fig:propertysending}
+\end{figure}
+
+The payloads of each topic varies. Every topic have different purposes, but some of them have similarities. To use the topics \emph{get}, \emph{set}, \emph{subscribe} or \emph{trigger}, the payload always contain the key-value-pair \texttt{property}. This should contain the URI-like key of the wanted property. See listing \ref{lst:getreq} for a \emph{get} topic request. In this example, \emph{get} could be changed to any of \emph{subscribe} or \emph{trigger} and still be a valid request. The purpose of that request would simply be different.
+
+\begin{lstlisting}[caption={Example get request sent by the GUI},label=lst:getreq]
+{
+  "type": "get",
+  "topic": 1,
+  "payload": {
+    "property": "example"
+  }
+}
+\end{lstlisting}
+
+On a \emph{get} request, the client asks for the value of the named property. The server receives the request, and if the named property can be found, a message is sent back to the client with the property in a JSON formatted structure. The serialization will be further explained later. On a \emph{subscription} request, the client asks to be notified each time the value of the given property has changed. If the server finds the given property, a callback that gets called each time the property changes it's value gets inserted. This callback sends the message to the client, just like the \emph{get} requests. A copy of the current value also gets sent immediately. The \emph{trigger} requests work differently. Here, no message gets sent back to the client, as the trigger property itself has no value. It can be thought of as a button. Pressing the button has no value itself - it is the underlying mechanisms that cause something to happen. This, in turn, could potentially be subscribed to or retrieved. To use the \emph{set} property, the client also needs to provide a new value to the property. See listing \ref{lst:setreq} for an example set request, where a three dimensional vector property gets set to \texttt{[1, 2, 3]}. \todo{add figure for property changing}
+
+\begin{lstlisting}[caption={Example get request sent by the GUI},label=lst:setreq]
+{
+  "type": "set",
+  "topic": 1,
+  "payload": {
+    "property": "example",
+    "value": [1, 2, 3]
+  }
+}
+\end{lstlisting}
+
+To verify that the client actually should get access to the web socket server, the \emph{authorize} topic exists. This can be used to prove the client's validity by providing a password. Whether or not this is required can be set in the Openspace configuration file, along with the password and an optional list of whitelisted IP addresses. The clients connecting from an IP address in the whitelist will not need authorization. If the client is not from one of the white listed addresses, however, all the topic requests but \emph{authorize} are disregarded until the client is considered authorized. In listing \ref{lst:authreq} for an example request. In listing \ref{lst:authrespok} a message telling the client it is authorized is shown. Listing\ref{lst:authrespnope} shows the message sent when the client could not be authorized. The code entry in the responses mimics HTTP status codes, see \cite[ch. 10]{RFC2616}.
+
+\begin{lstlisting}[caption={Example authorization request sent by the GUI},label=lst:authreq]
+{
+  "type": "authorize",
+  "topic": 1,
+  "payload": {
+    "key": "example-password"
+  }
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption={Example authorization granted response sent by the server},label=lst:authrespok]
+{
+  "message": "Authorization OK.",
+  "code": 200
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption={Example authorization denied response sent by the server},label=lst:authrespnope]
+{
+  "message": "Invalid key.",
+  "code": 401
+}
+\end{lstlisting}
+
+The \emph{bounce} topic provides a ping-like mechanism. Immediately when the server receives a bounce request, it sends back a bounce response. The \texttt{payload} sent may contain anything and is returned to the client.
+
+The \emph{lua script} topic allows the client to send an arbitrary lua script that will be executed by Openspace. This can for instance be shutting down the application or similar. There is no responses being sent back. An example request can be seen in listing \ref{lst:luareq}.
+
+\begin{lstlisting}[caption={Example Lua script request sent by the GUI, toggling the shut down process in OpenSpace.},label=lst:luareq]
+{
+  "type": "luascript",
+  "topic": 1,
+  "payload": {
+    "script": "openspace.toggleShutdown()"
+  }
+}
+\end{lstlisting}
+
+The \emph{time} topic handles everything related to the simulation time. This covers both the speed of the simulation and the actual simulation date and time. The client can subscribe to these items, and change them using the \emph{set} topic. Neither the simulation speed or the date are stored as properties, so to subscribe to them another method is used. By inserting a post render callback into the Openspace engine, the server can see if a value has been changed since it was sent last time. The structure of this request looks much like the \emph{get} request, as seen in listing \ref{lst:getreq}. However, the \texttt{property} entry has the value \emph{currentTime} or \emph{deltaTime}, depending on what callback you want. An example message sent from the server to the client can be seen in listing \ref{lst:timeresp}.
+
+\begin{lstlisting}[caption={Example response for the time topic, sending the current simulation time.},label=lst:timeresp]
+{
+  "topic": 1,
+  "payload": "2017-09-21T10:57:25.123"
+}
+\end{lstlisting}
+
+The simulation time is expected to change at a high rate. To limit the burden of sending messages, the rate is throttled. This is done on a per-topic basis, requiring a given time to pass between each message.
+
+\subsection{JSON serialization}
+
+As mentioned before, messages sent back and forth between the server and client are JSON formatted. On the server, this is done by using a JSON library that allows arbitrary C++ types to be serialized to JSON. See \cite{jsonlib} for more details on the library. Using this method, nested data structures may be serialized as the library uses recursion.
+
+A serialized Openspace property contains information that describes how it should be handled by the GUI. What type of data it contains, limits, name, description and its value are described. See listing \ref{lst:jsonproperty} for a completely serialized property.
+
+\begin{lstlisting}[caption={},label=lst:jsonproperty]
+{
+  "Value": 123,
+  "Description": {
+    "description": "Example description, explaining this property to the user",
+    "Type": "The type of this property",
+    "Identifier": "The URI to this property",
+    "Name": "The name to show in the GUI",
+    "MetaData": {
+      "Group": "",
+      "Visibility": "All", // one of All, Developer, User and Hidden
+      "ReadOnly": false
+    },
+    "AdditionalData": {}
+  }
+}
+\end{lstlisting}
+
+\section{GUI}
